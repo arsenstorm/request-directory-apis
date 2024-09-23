@@ -26,14 +26,34 @@ jobs:
         id: changes
         run: |
           if git rev-parse HEAD^ >/dev/null 2>&1; then
-            echo "CHANGED_FOLDERS=$(git diff --name-only HEAD^ HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
+            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD | grep -o '^[^/]*' | sort -u)
           else
-            echo "CHANGED_FOLDERS=$(git diff --name-only HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
+            CHANGED_FILES=$(git diff --name-only HEAD | grep -o '^[^/]*' | sort -u)
           fi
-          echo "Changed folders: $CHANGED_FOLDERS"
-
-      - name: Debug CHANGED_FOLDERS
-        run: echo "CHANGED_FOLDERS=$CHANGED_FOLDERS"
+      
+          echo "Changed files: $CHANGED_FILES"
+      
+          FOLDERS_WITH_DOCKERFILE=""
+          for folder in $CHANGED_FILES; do
+            if [[ -f "$folder/Dockerfile" ]]; then
+              FOLDERS_WITH_DOCKERFILE="$FOLDERS_WITH_DOCKERFILE $folder"
+            fi
+          done
+      
+          echo "Folders with Dockerfile: $FOLDERS_WITH_DOCKERFILE"
+      
+          # Trim any leading/trailing whitespace
+          FOLDERS_WITH_DOCKERFILE=$(echo "$FOLDERS_WITH_DOCKERFILE" | xargs)
+      
+          # Add it to the GitHub Actions environment if it's not empty
+          if [ -n "$FOLDERS_WITH_DOCKERFILE" ]; then
+            echo "CHANGED_FOLDERS=$FOLDERS_WITH_DOCKERFILE" >> $GITHUB_ENV
+          else
+            echo "CHANGED_FOLDERS=" >> $GITHUB_ENV
+          fi
+      
+          echo "Final CHANGED_FOLDERS: $FOLDERS_WITH_DOCKERFILE"
+        
 
       - name: Build and push Docker images
         if: env.CHANGED_FOLDERS != ''
