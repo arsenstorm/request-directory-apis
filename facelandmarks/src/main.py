@@ -22,7 +22,7 @@ def detect_landmarks(image):
     """This function detects face landmarks on an image."""
     det = hdface_detector(use_cuda=False)
     checkpoint = torch.load(
-        f'{os.path.dirname(__file__)}/faceland.pth', weights_only=True)
+        f'{os.path.dirname(__file__)}/faceland.pth', weights_only=True, map_location='cpu')
     plfd_backbone = FaceLanndInference()
     plfd_backbone.load_state_dict(checkpoint)
     plfd_backbone.eval()
