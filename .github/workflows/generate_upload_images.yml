@@ -62,7 +62,7 @@ jobs:
         run: |
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
-              docker build -t ${{ github.actor }}/$folder:latest $folder
+              docker build -t ghcr.io/${{ github.actor }}/$folder:latest $folder
               docker push ghcr.io/${{ github.actor }}/$folder:latest
             fi
           done
