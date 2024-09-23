@@ -25,7 +25,7 @@ python src/main.py
 By default, the API runs on port 7000.
 
 ```bash
-docker run -it -p7000:7000 arsenstorm/facelandmarks:latest
+docker run -it -p7000:7000 ghcr.io/arsenstorm/facelandmarks:latest
 ```
 
 ## API
