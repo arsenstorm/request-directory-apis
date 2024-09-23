@@ -7,6 +7,9 @@ WORKDIR /app
 # Set environment variables for the PyTorch build
 ENV USE_NNPACK=0
 
+# Copy everything
+COPY . .
+
 # Install system dependencies and Python packages
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -21,9 +24,6 @@ RUN apt-get update && apt-get install -y \
     && pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip install --no-cache-dir torch torchaudio torchvision  \
     && if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
-
-# Copy the rest of the application code into the container
-COPY . .
 
 # Expose the port the app runs on
 EXPOSE 7002
