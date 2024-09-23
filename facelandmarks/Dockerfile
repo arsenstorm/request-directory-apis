@@ -1,19 +1,13 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.9-slim
+FROM python:3.12-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Clone the PyTorch repository
-RUN git clone --recursive https://github.com/pytorch/pytorch && \
-    cd pytorch && \
-    git submodule sync && \
-    git submodule update --init --recursive
-
 # Set environment variables for the PyTorch build
 ENV USE_NNPACK=0
 
-# Install dependencies for building PyTorch
+# Install system dependencies and Python packages
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -23,20 +17,10 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libomp-dev \
     libopenblas-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install PyTorch from source
-WORKDIR /pytorch
-RUN python setup.py install
-
-# Return to the /app directory
-WORKDIR /app
-
-# Copy the requirements file into the container
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir torch torchaudio torchvision  \
+    && if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
 
 # Copy the rest of the application code into the container
 COPY . .
