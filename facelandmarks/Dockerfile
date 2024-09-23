@@ -14,11 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 7000
+EXPOSE 7002
 
 # Set environment variables
 ENV FACELANDMARKS_DEBUG=false
-ENV FACELANDMARKS_PORT=7000
+ENV FACELANDMARKS_PORT=7002
 
 # Run the application
 CMD ["python", "src/main.py"]

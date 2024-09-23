@@ -22,10 +22,10 @@ python src/main.py
 
 ## Usage
 
-By default, the API runs on port 7000.
+By default, the API runs on port 7002.
 
 ```bash
-docker run -it -p7000:7000 ghcr.io/arsenstorm/facelandmarks:latest
+docker run -it -p7002:7002 ghcr.io/arsenstorm/facelandmarks:latest
 ```
 
 ## API
@@ -44,7 +44,7 @@ As an example, we’ll upload this image:
 <img src="../.github/facelandmarks/example_input.jpg" alt="example_input" style="max-width: 500px;">
 
 ```bash
-curl -X POST http://localhost:7000/landmarks -F "image=@.github/facelandmarks/example_input.jpg"
+curl -X POST http://localhost:7002/landmarks -F "image=@.github/facelandmarks/example_input.jpg"
 ```
 
 #### Example Response
