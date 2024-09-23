@@ -22,7 +22,7 @@ def detect_landmarks(image):
     """This function detects face landmarks on an image."""
     det = hdface_detector(use_cuda=False)
     checkpoint = torch.load(
-        './facelandmarks/src/faceland.pth', weights_only=True)
+        f'{os.path.dirname(__file__)}/faceland.pth', weights_only=True)
     plfd_backbone = FaceLanndInference()
     plfd_backbone.load_state_dict(checkpoint)
     plfd_backbone.eval()
@@ -34,6 +34,8 @@ def detect_landmarks(image):
     if image is not None:
         height, width = image.shape[:2]
         img_det = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # this takes EXTREMELY long on macOS, but roughly 4 seconds on Windows
+        # if it’s like this in a Docker container, I‘ll probably fork and rewrite hdface
         result = det.detect_face(img_det)
         for i in range(len(result)):
             box = result[i]['box']
