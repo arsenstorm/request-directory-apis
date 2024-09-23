@@ -25,7 +25,11 @@ jobs:
       - name: Determine modified folders
         id: changes
         run: |
-          echo "CHANGED_FOLDERS=$(git diff --name-only HEAD^ HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            echo "CHANGED_FOLDERS=$(git diff --name-only HEAD^ HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
+          else
+            echo "CHANGED_FOLDERS=$(git diff --name-only HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
+          fi
 
       - name: Build and push Docker images
         if: env.CHANGED_FOLDERS
