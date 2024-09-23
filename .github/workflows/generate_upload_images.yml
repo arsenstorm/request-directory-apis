@@ -30,13 +30,17 @@ jobs:
           else
             echo "CHANGED_FOLDERS=$(git diff --name-only HEAD | grep -o '^[^/]*' | sort -u)" >> $GITHUB_ENV
           fi
+          echo "Changed folders: $CHANGED_FOLDERS"
+
+      - name: Debug CHANGED_FOLDERS
+        run: echo "CHANGED_FOLDERS=$CHANGED_FOLDERS"
 
       - name: Build and push Docker images
-        if: env.CHANGED_FOLDERS
+        if: env.CHANGED_FOLDERS != ''
         run: |
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
               docker build -t ${{ github.actor }}/$folder:latest $folder
-              docker push ${{ secrets.DOCKER_GITHUB_TOKEN }}/$folder:latest
+              docker push ghcr.io/${{ github.actor }}/$folder:latest
             fi
           done
