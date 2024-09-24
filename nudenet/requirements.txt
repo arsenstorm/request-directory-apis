@@ -1,0 +1,4 @@
+Flask==2.3.2
+Flask-Cors==3.0.10
+nudenet==3.4.2
+python-dotenv==1.0.0

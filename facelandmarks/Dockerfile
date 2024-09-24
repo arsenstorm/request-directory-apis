@@ -21,9 +21,7 @@ RUN apt-get update && apt-get install -y \
     libomp-dev \
     libopenblas-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir torch torchaudio torchvision  \
-    && if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+    && pip install -r requirements.txt
 
 # Expose the port the app runs on
 EXPOSE 7002
