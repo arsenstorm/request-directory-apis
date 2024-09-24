@@ -101,8 +101,8 @@ We get the following response:
 A total of 98 landmarks are returned, alongside the face bounds and the
 confidence of the detection.
 
-The image is returned as a base64 encoded string, which can be decoded where it’ll
-look like this:
+The image is returned as a base64 encoded string, which can be decoded where
+it’ll look like this:
 
 <img src="../.github/facelandmarks/example_output.jpg" alt="example_output" style="max-width: 500px;">
 
@@ -111,3 +111,10 @@ look like this:
 > You can test out the API using
 > [Request Directory](https://request.directory/facelandmarks) without needing
 > to run it locally.
+
+## Notes
+
+- Testing indicates that the API needs roughly 2GB of memory to run most
+  optimally.
+- When no API requests are running, the memory usage is roughly in the range of
+  0.8-1.0GB.
