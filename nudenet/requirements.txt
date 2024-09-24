@@ -1,4 +1,4 @@
 Flask==2.3.2
-Flask-Cors==3.0.10
+Flask-Cors==4.0.2
 nudenet==3.4.2
 python-dotenv==1.0.0
