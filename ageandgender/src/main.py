@@ -130,4 +130,4 @@ def infer():
 
 if __name__ == '__main__':
     port = int(os.getenv('AGEANDGENDER_PORT', 7003))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=DEBUG_MODE)
