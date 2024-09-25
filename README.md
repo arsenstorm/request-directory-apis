@@ -18,4 +18,8 @@ To see details about the NudeNet API, go to the [NudeNet README](./nudenet/READM
 
 To see details about the Face Landmarks API, go to the [Face Landmarks README](./facelandmarks/README.md)
 
+## Age and Gender API
+
+To see details about the Age and Gender API, go to the [Age and Gender README](./ageandgender/README.md)
+
 <sub>Copyright © 2024 Arsen Shkrumelyak. All rights reserved.</sub>
