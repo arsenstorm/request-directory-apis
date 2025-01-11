@@ -68,5 +68,5 @@ We get the following response:
 
 In this response, we’ve received these details:
 
-- `result`: The important stuff.
+- `result`: Contains a video download link and thumbnails.
 - `success`: Whether the request was successful.
