@@ -22,8 +22,8 @@ To see details about the Face Landmarks API, go to the [Face Landmarks README](.
 
 To see details about the Age and Gender API, go to the [Age and Gender README](./ageandgender/README.md)
 
-## Image Talker API
+## YouTube Downloader API
 
-To see details about the Image Talker API, go to the [Image Talker README](./imagetalker/README.md)
+To see details about the YouTube Downloader API, go to the [YouTube Downloader README](./youtubedl/README.md)
 
 <sub>Copyright © 2024 Arsen Shkrumelyak. All rights reserved.</sub>
