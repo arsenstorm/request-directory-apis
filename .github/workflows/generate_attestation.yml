@@ -1,0 +1,27 @@
+name: Generate Attestation
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      image_digest:
+        required: true
+        type: string
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      
+    steps:
+      - name: Generate Attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ inputs.image_name }}
+          subject-digest: ${{ inputs.image_digest }}
+          push-to-registry: true 

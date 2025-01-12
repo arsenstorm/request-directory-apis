@@ -58,9 +58,7 @@ jobs:
         if: env.CHANGED_FOLDERS != ''
         id: build_push
         run: |
-          NAMES=""
-          DIGESTS=""
-          
+          # Build all images first
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
               IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder"
@@ -76,30 +74,16 @@ jobs:
                 $folder 2>&1)
               
               DIGEST=$(echo "$BUILD_OUTPUT" | grep "pushing manifest.*@sha256:" | head -n1 | sed 's/.*@\(sha256:[a-f0-9]*\).*/\1/' | tr -d '\n\r')
-
-              if [ -z "$NAMES" ]; then
-                NAMES="$IMAGE_NAME"
-                DIGESTS="$DIGEST"
-              else
-                NAMES="$NAMES,$IMAGE_NAME"
-                DIGESTS="$DIGESTS,$DIGEST"
-              fi
+              
+              # Generate attestation for each image individually
+              echo "image_names=$IMAGE_NAME" >> $GITHUB_OUTPUT
+              echo "image_digests=$DIGEST" >> $GITHUB_OUTPUT
+              
+              echo "Generating attestation for $IMAGE_NAME"
+              gh workflow run generate_attestation.yml \
+                -f image_name=$IMAGE_NAME \
+                -f image_digest=$DIGEST
             fi
           done
-          
-          # Write final outputs
-          echo "image_names=$NAMES" >> $GITHUB_OUTPUT
-          echo "image_digests=$DIGESTS" >> $GITHUB_OUTPUT
-          
-          echo "Final image_names: $NAMES"
-          echo "Final image_digests: $DIGESTS"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate Attestations
-        if: env.CHANGED_FOLDERS != ''
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ steps.build_push.outputs.image_names }}
-          subject-digest: ${{ steps.build_push.outputs.image_digests }}
-          push-to-registry: true
