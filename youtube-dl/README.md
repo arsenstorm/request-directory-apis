@@ -51,24 +51,25 @@ We get the following response:
 
 ```json
 {
-  "result": {
-    "video_id": "dQw4w9WgXcQ",
-    "thumbnails": {
-      "max": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", // 1280x720
-      "high": "https://i.ytimg.com/vi/dQw4w9WgXcQ/sddefault.jpg", // 640x360
-      "mid": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", // 480x360
-      "low": "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg", // 320x180
-      "min": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" // 120x90
-    },
-    "download_url": "https://request.directory/download/..." // The downloaded video expires after 24 hours
+  "video_id": "dQw4w9WgXcQ",
+  "thumbnails": {
+    "max": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", // 1280x720
+    "high": "https://i.ytimg.com/vi/dQw4w9WgXcQ/sddefault.jpg", // 640x360
+    "mid": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg", // 480x360
+    "low": "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg", // 320x180
+    "min": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" // 120x90
   },
+  "download_url": "https://request.directory/download/...", // The downloaded video expires after 24 hours
   "success": true
 }
 ```
 
 In this response, we’ve received these details:
 
-- `result`: Contains a video download link and thumbnails.
+- `video_id`: The ID of the video.
+- `thumbnails`: The thumbnails of the video.
+- `download_url`: The URL of the downloaded video.
+- `expires_at`: The expiration date of the downloaded video.
 - `success`: Whether the request was successful.
 
 ## Notes
