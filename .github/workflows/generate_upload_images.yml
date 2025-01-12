@@ -87,23 +87,13 @@ jobs:
               # Try to extract digest from pushing manifest line
               DIGEST=$(echo "$BUILD_OUTPUT" | grep "pushing manifest.*@sha256:" | head -n1 | sed 's/.*@\(sha256:[a-f0-9]*\).*/\1/' | tr -d '\n\r')
               
-              echo "Debug - Image Name: $IMAGE_NAME"
-              echo "Debug - Digest: $DIGEST"
+              # Start fresh each time
+              echo "image_digests=$DIGEST" > "$GITHUB_OUTPUT"
+              echo "image_names=$IMAGE_NAME" > "$GITHUB_OUTPUT"
               
-              # Append to our lists without trailing commas
-              if [ -z "$(cat $GITHUB_OUTPUT | grep '^image_digests=')" ]; then
-                echo "image_digests=$DIGEST" >> $GITHUB_OUTPUT
-              else
-                CURRENT_DIGESTS=$(cat $GITHUB_OUTPUT | grep '^image_digests=' | cut -d'=' -f2)
-                echo "image_digests=$CURRENT_DIGESTS,$DIGEST" >> $GITHUB_OUTPUT
-              fi
-              
-              if [ -z "$(cat $GITHUB_OUTPUT | grep '^image_names=')" ]; then
-                echo "image_names=$IMAGE_NAME" >> $GITHUB_OUTPUT
-              else
-                CURRENT_NAMES=$(cat $GITHUB_OUTPUT | grep '^image_names=' | cut -d'=' -f2)
-                echo "image_names=$CURRENT_NAMES,$IMAGE_NAME" >> $GITHUB_OUTPUT
-              fi
+              # Debug the actual content
+              echo "Debug - GITHUB_OUTPUT contents:"
+              cat "$GITHUB_OUTPUT"
             fi
           done
           
