@@ -79,13 +79,6 @@ jobs:
               # Append to our lists with a delimiter
               echo "image_digests=${DIGEST}," >> $GITHUB_OUTPUT
               echo "image_names=${IMAGE_NAME}," >> $GITHUB_OUTPUT
-              
-              # Make the package public
-              gh api \
-                --method PATCH \
-                "/packages/container/$folder/visibility" \
-                -f visibility='public' \
-                -H "Accept: application/vnd.github+json"
             fi
           done
         env:
