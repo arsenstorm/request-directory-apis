@@ -60,6 +60,7 @@ We get the following response:
     "min": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" // 120x90
   },
   "download_url": "https://request.directory/download/...", // The downloaded video expires after 24 hours
+  "expires_at": "2025-01-13T00:00:00Z", // The expiration date of the downloaded video
   "success": true
 }
 ```
