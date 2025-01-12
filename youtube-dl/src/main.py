@@ -9,12 +9,13 @@ from pathlib import Path
 
 load_dotenv()
 
-DOWNLOAD_DIR = Path(os.path.dirname(os.path.abspath(__file__))) / 'downloads'
+PROJECT_ROOT = Path(os.path.dirname(os.path.abspath(__file__))).parent
+DOWNLOAD_DIR = PROJECT_ROOT / 'downloads'
 DOWNLOAD_DIR.mkdir(exist_ok=True)
 DEBUG_MODE = os.getenv('YOUTUBEDL_DEBUG', 'false').lower() == 'true'
 PORT = int(os.getenv('YOUTUBEDL_PORT', '7005'))
-COOKIE_FILE = Path(os.path.dirname(os.path.abspath(__file__))) / 'cookies.txt'
-COOKIE_FILE_EXISTS = COOKIE_FILE.exists()
+COOKIE_FILE = PROJECT_ROOT / 'cookies.txt'
+COOKIE_FILE_EXISTS = COOKIE_FILE.is_file()
 VALID_YOUTUBE_VIDEO_URLS = [
     'https://www.youtube.com/watch?v=',
     'https://youtu.be/',
