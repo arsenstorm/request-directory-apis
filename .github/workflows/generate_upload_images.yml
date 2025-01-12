@@ -73,7 +73,7 @@ jobs:
                 -t $IMAGE_NAME \
                 --provenance=false \
                 --output type=image,push=true \
-                $folder)
+                $folder 2>&1)
               
               echo "Debug - Full Build Output:"
               echo "$BUILD_OUTPUT"
@@ -84,8 +84,8 @@ jobs:
               echo "Debug - Grep for manifest:"
               echo "$BUILD_OUTPUT" | grep "manifest"
               
-              # Try to extract digest from exporting manifest line
-              DIGEST=$(echo "$BUILD_OUTPUT" | grep "exporting manifest sha256:" | head -n1 | grep -o 'sha256:[a-f0-9]*')
+              # Try to extract digest from pushing manifest line
+              DIGEST=$(echo "$BUILD_OUTPUT" | grep "pushing manifest.*@sha256:" | head -n1 | sed 's/.*@\(sha256:[a-f0-9]*\).*/\1/')
               
               echo "Debug - Image Name: $IMAGE_NAME"
               echo "Debug - Digest: $DIGEST"
