@@ -53,7 +53,7 @@ We get the following response:
 {
   "video_id": "7268821288821821446",
   "download_url": "https://request.directory/download/tiktok/...", // The downloaded video expires after 24 hours
-  "expires_at": "2025-01-13T00:00:00Z", // The expiration date of the downloaded video
+  "expires_at": "Tue, 14 Jan 2025 22:23:11 GMT", // The expiration date of the downloaded video
   "success": true
 }
 ```
