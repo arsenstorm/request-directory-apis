@@ -64,7 +64,7 @@ jobs:
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
               IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder"
-              DIGEST=$(docker buildx build \
+              BUILD_OUTPUT=$(docker buildx build \
                 --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
                 --label "org.opencontainers.image.description=Public container image for $folder" \
                 --label "org.opencontainers.image.licenses=AGPL-3.0" \
@@ -73,7 +73,19 @@ jobs:
                 -t $IMAGE_NAME \
                 --provenance=false \
                 --output type=image,push=true \
-                $folder | grep 'sha256:' | tail -n1)
+                $folder)
+              
+              echo "Debug - Full Build Output:"
+              echo "$BUILD_OUTPUT"
+              
+              echo "Debug - Grep for sha256:"
+              echo "$BUILD_OUTPUT" | grep "sha256:"
+              
+              echo "Debug - Grep for manifest:"
+              echo "$BUILD_OUTPUT" | grep "manifest"
+              
+              # Try to extract digest from exporting manifest line
+              DIGEST=$(echo "$BUILD_OUTPUT" | grep "exporting manifest sha256:" | head -n1 | grep -o 'sha256:[a-f0-9]*')
               
               echo "Debug - Image Name: $IMAGE_NAME"
               echo "Debug - Digest: $DIGEST"
