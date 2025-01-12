@@ -1,6 +1,14 @@
 name: Generate Attestation
 
 on:
+  workflow_dispatch:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      image_digest:
+        required: true
+        type: string
   workflow_call:
     inputs:
       image_name:
