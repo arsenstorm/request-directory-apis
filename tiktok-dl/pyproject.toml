@@ -11,3 +11,4 @@ dependencies = [
     "python-dotenv==1.0.0",
     "yt-dlp==2024.12.23",
 ]
+

@@ -84,12 +84,12 @@ jobs:
               echo "Debug - Grep for manifest:"
               echo "$BUILD_OUTPUT" | grep "manifest"
               
-              # Try to extract digest from pushing manifest line
               DIGEST=$(echo "$BUILD_OUTPUT" | grep "pushing manifest.*@sha256:" | head -n1 | sed 's/.*@\(sha256:[a-f0-9]*\).*/\1/' | tr -d '\n\r')
-              
-              # Start fresh each time
-              echo "image_digests=$DIGEST" > "$GITHUB_OUTPUT"
-              echo "image_names=$IMAGE_NAME" > "$GITHUB_OUTPUT"
+
+              {
+                echo "image_names=$IMAGE_NAME"
+                echo "image_digests=$DIGEST"
+              } > "$GITHUB_OUTPUT"
               
               # Debug the actual content
               echo "Debug - GITHUB_OUTPUT contents:"
