@@ -103,19 +103,18 @@ def download():
             try:
                 if s3.head_object(Bucket=os.getenv('R2_BUCKET_NAME'), Key=r2_key):
                     return jsonify({
-                        "result": {
-                            "video_id": video_id,
-                            "thumbnails": {
-                                "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
-                                "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
-                                "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                                "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
-                                "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
-                            },
-                            "download_url": download_url,
-                            "expires_at": datetime.now() + timedelta(minutes=3600)
+                        "video_id": video_id,
+                        "thumbnails": {
+                            "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
+                            "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
+                            "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+                            "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
+                            "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
                         },
+                        "download_url": download_url,
+                        "expires_at": datetime.now() + timedelta(minutes=3600),
                         "success": True
+
                     })
             except s3.exceptions.ClientError as e:
                 if e.response['Error']['Code'] != '404':
@@ -141,18 +140,16 @@ def download():
                 }), 500
 
             return jsonify({
-                "result": {
-                    "video_id": video_id,
-                    "thumbnails": {
-                        "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
-                        "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
-                        "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                        "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
-                        "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
-                    },
-                    "download_url": download_url,
-                    "expires_at": datetime.now() + timedelta(minutes=3600)
+                "video_id": video_id,
+                "thumbnails": {
+                    "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
+                    "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
+                    "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+                    "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
+                    "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
                 },
+                "download_url": download_url,
+                "expires_at": datetime.now() + timedelta(minutes=3600),
                 "success": True
             })
 
