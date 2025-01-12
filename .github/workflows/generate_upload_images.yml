@@ -13,6 +13,7 @@ jobs:
       packages: write
       contents: read
       attestations: write
+      actions: write
 
     steps:
       - name: Checkout repository
@@ -82,7 +83,8 @@ jobs:
               echo "Generating attestation for $IMAGE_NAME"
               gh workflow run generate_attestation.yml \
                 -f image_name=$IMAGE_NAME \
-                -f image_digest=$DIGEST
+                -f image_digest=$DIGEST \
+                -R ${{ github.repository }}
             fi
           done
         env:
