@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import yt_dlp
@@ -14,8 +15,8 @@ DOWNLOAD_DIR = PROJECT_ROOT / 'downloads'
 DOWNLOAD_DIR.mkdir(exist_ok=True)
 
 
-DEBUG_MODE = os.getenv('YOUTUBEDL_DEBUG', 'false').lower() == 'true'
-PORT = int(os.getenv('YOUTUBEDL_PORT', '7005'))
+DEBUG_MODE = os.getenv('TIKTOKDL_DEBUG', 'false').lower() == 'true'
+PORT = int(os.getenv('TIKTOKDL_PORT', '7006'))
 
 
 COOKIE_FILE = PROJECT_ROOT / 'cookies.txt'
@@ -25,17 +26,6 @@ if not COOKIE_FILE_EXISTS:
     print("Warning: cookies.txt file not found. Some videos may be inaccessible.")
 elif os.path.getsize(COOKIE_FILE) == 0:
     print("Warning: cookies.txt file is empty. Some videos may be inaccessible.")
-
-VALID_YOUTUBE_VIDEO_URLS = [
-    'https://www.youtube.com/watch?v=',
-    'https://youtu.be/',
-    'https://m.youtube.com/watch?v=',
-    'https://www.youtube.com/embed/',
-    'https://www.youtube.com/v/',
-    'https://www.youtube.com/shorts/',
-    'https://www.youtube.com/live/',
-    'https://music.youtube.com/watch?v=',
-]
 
 
 required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY',
@@ -57,10 +47,10 @@ app = Flask(__name__)
 
 
 def get_id_from_url(url):
-    for valid_url in VALID_YOUTUBE_VIDEO_URLS:
-        if url.startswith(valid_url):
-            return url.split(valid_url)[1]
-    return None
+    new_url = urlparse(url)
+    if not new_url.hostname.endswith('tiktok.com'):
+        return None
+    return f"{new_url.hostname}/{new_url.path}".replace('//', '/')
 
 
 @app.route('/download', methods=['POST'])
@@ -73,12 +63,12 @@ def download():
         }), 400
 
     url = data['url']
-    video_id = get_id_from_url(url)
-    print(video_id)
+    video_url = get_id_from_url(url)
+    print(video_url)
 
-    if not video_id:
+    if not video_url:
         return jsonify({
-            "error": "Invalid YouTube URL.",
+            "error": "Invalid TikTok URL.",
             "success": False
         }), 400
 
@@ -96,21 +86,15 @@ def download():
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            r2_key = f"youtube/{video_id}.{info['ext']}"
+            video_id = video_url.split('/')[-1]
+            info = ydl.extract_info(video_url, download=False)
+            r2_key = f"tiktok/{video_id}.{info['ext']}"
             download_url = f"{os.getenv('R2_PUBLIC_URL')}/{r2_key}"
 
             try:
                 if s3.head_object(Bucket=os.getenv('R2_BUCKET_NAME'), Key=r2_key):
                     return jsonify({
                         "video_id": video_id,
-                        "thumbnails": {
-                            "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
-                            "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
-                            "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                            "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
-                            "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
-                        },
                         "download_url": download_url,
                         "expires_at": datetime.now() + timedelta(minutes=3600),
                         "success": True
@@ -141,13 +125,6 @@ def download():
 
             return jsonify({
                 "video_id": video_id,
-                "thumbnails": {
-                    "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
-                    "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
-                    "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                    "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
-                    "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
-                },
                 "download_url": download_url,
                 "expires_at": datetime.now() + timedelta(minutes=3600),
                 "success": True
