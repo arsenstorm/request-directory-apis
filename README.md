@@ -26,4 +26,8 @@ To see details about the Age and Gender API, go to the [Age and Gender README](.
 
 To see details about the YouTube Downloader API, go to the [YouTube Downloader README](./youtubedl/README.md)
 
+## TikTok Downloader API
+
+To see details about the TikTok Downloader API, go to the [TikTok Downloader README](./tiktok-dl/README.md)
+
 <sub>Copyright © 2024 Arsen Shkrumelyak. All rights reserved.</sub>
