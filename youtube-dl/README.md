@@ -70,3 +70,8 @@ In this response, we’ve received these details:
 
 - `result`: Contains a video download link and thumbnails.
 - `success`: Whether the request was successful.
+
+## Notes
+
+- You’ll need to export your cookies to host this API as Google actively blocks
+  requests is suspects of scraping.

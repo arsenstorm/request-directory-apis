@@ -386,7 +386,6 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "boto3" },
-    { name = "certifi" },
     { name = "flask" },
     { name = "flask-cors" },
     { name = "python-dotenv" },
@@ -396,16 +395,15 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "boto3", specifier = ">=1.35.97" },
-    { name = "certifi", specifier = ">=2024.12.14" },
     { name = "flask", specifier = "==2.3.2" },
     { name = "flask-cors", specifier = ">=4.0.2" },
     { name = "python-dotenv", specifier = "==1.0.0" },
-    { name = "yt-dlp", specifier = "==2024.3.10" },
+    { name = "yt-dlp", specifier = "==2024.7.7" },
 ]
 
 [[package]]
 name = "yt-dlp"
-version = "2024.3.10"
+version = "2024.7.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "brotli", marker = "implementation_name == 'cpython'" },
@@ -417,7 +415,7 @@ dependencies = [
     { name = "urllib3" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/1d/f9617f151c124a15981cf79c47b6a53ac875942211b40010f0381296c51d/yt_dlp-2024.3.10.tar.gz", hash = "sha256:6e74cb14a69dbeb872c8ef4e0b8bbed2ee846ec633513cf3124a74c1faedc07b", size = 2741172 }
+sdist = { url = "https://files.pythonhosted.org/packages/df/ec/09031f0179cd0d41cdd40de14d18cda31061fffeaa29c8ee56219cbda599/yt_dlp-2024.7.7.tar.gz", hash = "sha256:2a0f89423d25d47db949925db5bd2c6f651960ae93dbbf5b3ed61cf3a4078ce5", size = 2839886 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/06/f8/a42be2524a6f53f5aa78f37313473890a2155ea2e3d11247b8f35d32226a/yt_dlp-2024.3.10-py3-none-any.whl", hash = "sha256:bbe66b9a3aa23b6378ccca3ea20f5aadf385fa21a993513a105d73c827a86ed4", size = 3049050 },
+    { url = "https://files.pythonhosted.org/packages/3d/31/e6cf721778ac1a6b920a28ed3db5c83dde6e2a337595ced5bfee865cd71c/yt_dlp-2024.7.7-py3-none-any.whl", hash = "sha256:2e90abeadc0199c787b1b4a3e0a1c8ed9d7c9f824f58da88467a1b30ed745e07", size = 3118714 },
 ]

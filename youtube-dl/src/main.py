@@ -13,6 +13,8 @@ DOWNLOAD_DIR = Path(os.path.dirname(os.path.abspath(__file__))) / 'downloads'
 DOWNLOAD_DIR.mkdir(exist_ok=True)
 DEBUG_MODE = os.getenv('YOUTUBEDL_DEBUG', 'false').lower() == 'true'
 PORT = int(os.getenv('YOUTUBEDL_PORT', '7005'))
+COOKIE_FILE = Path(os.path.dirname(os.path.abspath(__file__))) / 'cookies.txt'
+COOKIE_FILE_EXISTS = COOKIE_FILE.exists()
 VALID_YOUTUBE_VIDEO_URLS = [
     'https://www.youtube.com/watch?v=',
     'https://youtu.be/',
@@ -24,8 +26,8 @@ VALID_YOUTUBE_VIDEO_URLS = [
     'https://music.youtube.com/watch?v=',
 ]
 
-required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY_ID',
-                     'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']
+required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY',
+                     'R2_SECRET_KEY', 'R2_BUCKET_NAME', 'R2_PUBLIC_URL']
 missing_vars = [var for var in required_env_vars if not os.getenv(var)]
 if missing_vars:
     raise ValueError(
@@ -33,8 +35,8 @@ if missing_vars:
 
 s3 = boto3.client('s3',
                   endpoint_url=os.getenv('R2_ENDPOINT'),
-                  aws_access_key_id=os.getenv('R2_ACCESS_KEY_ID'),
-                  aws_secret_access_key=os.getenv('R2_SECRET_ACCESS_KEY'),
+                  aws_access_key_id=os.getenv('R2_ACCESS_KEY'),
+                  aws_secret_access_key=os.getenv('R2_SECRET_KEY'),
                   config=Config(signature_version='s3v4'),
                   region_name='auto'
                   )
@@ -78,43 +80,53 @@ def download():
             'no_warnings': False,
             'extract_flat': False,
             'ssl_verify': False,
+            'cookiefile': str(COOKIE_FILE) if COOKIE_FILE_EXISTS else None,
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-
-            # check if the file already exists in R2
             r2_key = f"{video_id}.{info['ext']}"
-
-            # Public Access URL
             download_url = f"{os.getenv('R2_PUBLIC_URL')}/{r2_key}"
 
-            if s3.head_object(Bucket=os.getenv('R2_BUCKET'), Key=r2_key):
-                return jsonify({
-                    "result": {
-                        "video_id": video_id,
-                        "thumbnails": {
-                            "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
-                            "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
-                            "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                            "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
-                            "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
+            try:
+                if s3.head_object(Bucket=os.getenv('R2_BUCKET_NAME'), Key=r2_key):
+                    return jsonify({
+                        "result": {
+                            "video_id": video_id,
+                            "thumbnails": {
+                                "max": f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg",
+                                "high": f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg",
+                                "mid": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+                                "low": f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg",
+                                "min": f"https://i.ytimg.com/vi/{video_id}/default.jpg",
+                            },
+                            "download_url": download_url,
+                            "expires_at": datetime.now() + timedelta(minutes=3600)
                         },
-                        "download_url": download_url,
-                        "expires_at": datetime.now() + timedelta(minutes=3600)
-                    },
-                    "success": True
-                })
+                        "success": True
+                    })
+            except s3.exceptions.ClientError as e:
+                if e.response['Error']['Code'] != '404':
+                    raise
 
-            ydl.download([url])
+            try:
+                ydl.download([url])
+            except Exception:
+                return jsonify({
+                    "error": "We’ve been unable to download this video from YouTube. Please try again later.",
+                    "success": False
+                }), 500
 
-            # Upload to R2
-            local_file = str(DOWNLOAD_DIR / f"{video_id}.{info['ext']}")
-            r2_key = f"{video_id}.{info['ext']}"
-            s3.upload_file(local_file, os.getenv('R2_BUCKET'), r2_key)
-
-            # Delete local file after upload
-            os.remove(local_file)
+            try:
+                local_file = str(DOWNLOAD_DIR / f"{video_id}.{info['ext']}")
+                s3.upload_file(local_file, os.getenv('R2_BUCKET_NAME'), r2_key)
+                os.remove(local_file)
+            except Exception as e:
+                print(e)
+                return jsonify({
+                    "error": "We’ve been unable to upload this video to storage. Please try again later.",
+                    "success": False
+                }), 500
 
             return jsonify({
                 "result": {
