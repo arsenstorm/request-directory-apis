@@ -63,7 +63,7 @@ jobs:
           
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
-              IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder"
+              IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder:latest"
               digest_output=$(docker buildx build \
                 --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
                 --label "org.opencontainers.image.description=Public container image for $folder" \
@@ -75,12 +75,21 @@ jobs:
               
               # Extract the digest
               DIGEST=$(docker inspect $IMAGE_NAME:latest | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2)
+              if [[ ! $DIGEST == sha256:* ]]; then
+                DIGEST="sha256:$DIGEST"
+              fi
+              
+              echo "Debug - Image Name: $IMAGE_NAME"
+              echo "Debug - Digest: $DIGEST"
               
               # Append to our lists with a delimiter
               echo "image_digests=$DIGEST," >> $GITHUB_OUTPUT
               echo "image_names=$IMAGE_NAME," >> $GITHUB_OUTPUT
             fi
           done
+          
+          echo "Final image_names: $(cat $GITHUB_OUTPUT | grep '^image_names=' | cut -d'=' -f2)"
+          echo "Final image_digests: $(cat $GITHUB_OUTPUT | grep '^image_digests=' | cut -d'=' -f2)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
