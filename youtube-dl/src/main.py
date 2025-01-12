@@ -24,6 +24,11 @@ VALID_YOUTUBE_VIDEO_URLS = [
     'https://music.youtube.com/watch?v=',
 ]
 
+required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']
+missing_vars = [var for var in required_env_vars if not os.getenv(var)]
+if missing_vars:
+    raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+
 s3 = boto3.client('s3',
                   endpoint_url=os.getenv('R2_ENDPOINT'),
                   aws_access_key_id=os.getenv('R2_ACCESS_KEY_ID'),
