@@ -12,10 +12,20 @@ load_dotenv()
 PROJECT_ROOT = Path(os.path.dirname(os.path.abspath(__file__))).parent
 DOWNLOAD_DIR = PROJECT_ROOT / 'downloads'
 DOWNLOAD_DIR.mkdir(exist_ok=True)
+
+
 DEBUG_MODE = os.getenv('YOUTUBEDL_DEBUG', 'false').lower() == 'true'
 PORT = int(os.getenv('YOUTUBEDL_PORT', '7005'))
+
+
 COOKIE_FILE = PROJECT_ROOT / 'cookies.txt'
 COOKIE_FILE_EXISTS = COOKIE_FILE.is_file()
+
+if not COOKIE_FILE_EXISTS:
+    print("Warning: cookies.txt file not found. Some videos may be inaccessible.")
+elif os.path.getsize(COOKIE_FILE) == 0:
+    print("Warning: cookies.txt file is empty. Some videos may be inaccessible.")
+
 VALID_YOUTUBE_VIDEO_URLS = [
     'https://www.youtube.com/watch?v=',
     'https://youtu.be/',
@@ -26,6 +36,7 @@ VALID_YOUTUBE_VIDEO_URLS = [
     'https://www.youtube.com/live/',
     'https://music.youtube.com/watch?v=',
 ]
+
 
 required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY',
                      'R2_SECRET_KEY', 'R2_BUCKET_NAME', 'R2_PUBLIC_URL']
