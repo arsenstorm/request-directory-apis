@@ -76,7 +76,9 @@ jobs:
               docker push ghcr.io/${{ github.actor }}/$folder:latest
               
               # Make the package public
-              gh api --method PATCH /user/packages/container/$folder/visibility \
+              gh api \
+                --method PATCH \
+                "/orgs/${{ github.repository_owner }}/packages/container/$folder/visibility" \
                 -f visibility='public' \
                 -H "Accept: application/vnd.github+json"
             fi
