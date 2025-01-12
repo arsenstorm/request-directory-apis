@@ -64,20 +64,16 @@ jobs:
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
               IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder"
-              digest_output=$(docker buildx build \
+              DIGEST=$(docker buildx build \
                 --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
                 --label "org.opencontainers.image.description=Public container image for $folder" \
                 --label "org.opencontainers.image.licenses=AGPL-3.0" \
                 --push \
                 --platform linux/amd64 \
-                -t $IMAGE_NAME:latest \
-                $folder --output type=registry,push=true)
-              
-              # Extract the digest
-              DIGEST=$(docker inspect $IMAGE_NAME:latest | jq -r '.[0].RepoDigests[0]' | cut -d'@' -f2)
-              if [[ ! $DIGEST == sha256:* ]]; then
-                DIGEST="sha256:$DIGEST"
-              fi
+                -t $IMAGE_NAME \
+                --provenance=false \
+                --output type=image,push=true \
+                $folder | grep 'sha256:' | tail -n1)
               
               echo "Debug - Image Name: $IMAGE_NAME"
               echo "Debug - Digest: $DIGEST"
