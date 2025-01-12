@@ -65,15 +65,28 @@ jobs:
 
       - name: Build and push Docker images
         if: env.CHANGED_FOLDERS != ''
+        id: build_push
         run: |
+          # Initialize an empty array for digests
+          echo "image_digests=" >> $GITHUB_OUTPUT
+          echo "image_names=" >> $GITHUB_OUTPUT
+          
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
+              IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder:latest"
+              
               docker build \
                 --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
                 --label "org.opencontainers.image.description=Public container image for $folder" \
                 --label "org.opencontainers.image.licenses=AGPL-3.0" \
-                -t ghcr.io/${{ github.actor }}/$folder:latest $folder
-              docker push ghcr.io/${{ github.actor }}/$folder:latest
+                -t $IMAGE_NAME $folder
+              
+              # Get the image digest
+              DIGEST=$(docker push $IMAGE_NAME | grep digest | cut -d' ' -f3)
+              
+              # Append to our lists with a delimiter
+              echo "image_digests=${DIGEST}," >> $GITHUB_OUTPUT
+              echo "image_names=${IMAGE_NAME}," >> $GITHUB_OUTPUT
               
               # Make the package public
               gh api \
@@ -81,6 +94,26 @@ jobs:
                 "/orgs/${{ github.repository_owner }}/packages/container/$folder/visibility" \
                 -f visibility='public' \
                 -H "Accept: application/vnd.github+json"
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Attestations
+        if: env.CHANGED_FOLDERS != ''
+        run: |
+          # Split the comma-separated strings into arrays
+          IFS=',' read -ra DIGESTS <<< "${{ steps.build_push.outputs.image_digests }}"
+          IFS=',' read -ra NAMES <<< "${{ steps.build_push.outputs.image_names }}"
+          
+          # Loop through both arrays together
+          for i in "${!DIGESTS[@]}"; do
+            if [ -n "${DIGESTS[$i]}" ] && [ -n "${NAMES[$i]}" ]; then
+              echo "Generating attestation for ${NAMES[$i]}"
+              gh attest generate \
+                --subject-name "${NAMES[$i]}" \
+                --subject-digest "${DIGESTS[$i]}" \
+                --push-to-registry
             fi
           done
         env:
