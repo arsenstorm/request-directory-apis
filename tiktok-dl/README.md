@@ -62,7 +62,7 @@ In this response, we’ve received these details:
 
 - `video_id`: The ID of the video.
 - `download_url`: The URL of the downloaded video.
-- `expires_at`: The expiration date of the downloaded video.
+- `expires_at`: When the download URL expires.
 - `success`: Whether the request was successful.
 
 ## Notes
