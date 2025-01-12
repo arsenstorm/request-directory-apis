@@ -41,3 +41,4 @@ ENV YOUTUBEDL_DEBUG=false \
 
 # Run the app using the Python from the virtual environment
 CMD ["/app/.venv/bin/python", "src/main.py"]
+

@@ -25,7 +25,9 @@ jobs:
       id-token: write
       packages: write
       contents: read
-      
+      attestations: write
+      actions: write
+
     steps:
       - name: Generate Attestation
         uses: actions/attest-build-provenance@v2
