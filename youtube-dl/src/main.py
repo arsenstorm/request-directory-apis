@@ -24,10 +24,12 @@ VALID_YOUTUBE_VIDEO_URLS = [
     'https://music.youtube.com/watch?v=',
 ]
 
-required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']
+required_env_vars = ['R2_ENDPOINT', 'R2_ACCESS_KEY_ID',
+                     'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']
 missing_vars = [var for var in required_env_vars if not os.getenv(var)]
 if missing_vars:
-    raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+    raise ValueError(
+        f"Missing required environment variables: {', '.join(missing_vars)}")
 
 s3 = boto3.client('s3',
                   endpoint_url=os.getenv('R2_ENDPOINT'),
@@ -110,6 +112,9 @@ def download():
             local_file = str(DOWNLOAD_DIR / f"{video_id}.{info['ext']}")
             r2_key = f"{video_id}.{info['ext']}"
             s3.upload_file(local_file, os.getenv('R2_BUCKET'), r2_key)
+
+            # Delete local file after upload
+            os.remove(local_file)
 
             return jsonify({
                 "result": {
