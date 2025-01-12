@@ -74,10 +74,10 @@ jobs:
                 -t $IMAGE_NAME $folder
               
               # Get the image digest
-              DIGEST=$(docker push $IMAGE_NAME | grep digest | cut -d' ' -f3)
+              DIGEST=$(docker push $IMAGE_NAME | grep digest | awk '{print $3}')
               
               # Append to our lists with a delimiter
-              echo "image_digests=${DIGEST}," >> $GITHUB_OUTPUT
+              echo "image_digests=sha256:${DIGEST}," >> $GITHUB_OUTPUT
               echo "image_names=${IMAGE_NAME}," >> $GITHUB_OUTPUT
             fi
           done
