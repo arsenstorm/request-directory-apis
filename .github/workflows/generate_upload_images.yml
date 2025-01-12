@@ -63,7 +63,7 @@ jobs:
           
           for folder in $CHANGED_FOLDERS; do
             if [ -f "$folder/Dockerfile" ]; then
-              IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder:latest"
+              IMAGE_NAME="ghcr.io/${{ github.actor }}/$folder"
               digest_output=$(docker buildx build \
                 --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
                 --label "org.opencontainers.image.description=Public container image for $folder" \
