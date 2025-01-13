@@ -47,8 +47,9 @@ def process_subtitle(subtitle_file):
     subtitles = []
     previous_text = None
 
-    for caption in WebVTT().read(subtitle_file):
-        current_text = f"{caption.start}: {caption.text}"
+    for caption in WebVTT().read(subtitle_file, encoding='utf-8'):
+        cleaned_text = caption.text.encode('utf-8', errors='ignore').decode('utf-8')
+        current_text = f"{caption.start}: {cleaned_text}"
         if current_text != previous_text:
             subtitles.append(current_text)
             previous_text = current_text
