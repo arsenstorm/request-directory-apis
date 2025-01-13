@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 import boto3
 from botocore.client import Config
 from pathlib import Path
-from webvtt import WebVTT
 import math
 from concurrent.futures import ThreadPoolExecutor
+import html
 
 load_dotenv()
 
@@ -45,14 +45,14 @@ def get_id_from_url(url):
 
 def process_subtitle(subtitle_file):
     subtitles = []
-    previous_text = None
 
-    for caption in WebVTT().read(subtitle_file, encoding='utf-8'):
-        cleaned_text = caption.text.encode('utf-8', errors='ignore').decode('utf-8')
-        current_text = f"{caption.start}: {cleaned_text}"
-        if current_text != previous_text:
-            subtitles.append(current_text)
-            previous_text = current_text
+    with open(subtitle_file, 'r', encoding='utf-8') as f:
+        for line in f.readlines():
+            if "<p" in line:
+                start = line.split("begin=")[1].split("\"")[1]
+                text = line.split(">")[1].split("</p")[0]
+                cleaned_text = html.unescape(text)
+                subtitles.append(f"{start}: {cleaned_text}")
 
     return '\n'.join(subtitles)
 
@@ -154,7 +154,7 @@ def download():
             'writesubtitles': True,
             'writeautomaticsub': True,
             'subtitleslangs': ['en'],
-            'subtitlesformat': 'vtt',
+            'subtitlesformat': 'ttml',
             'nocheckcertificate': True,
             # 'quiet': True,
             # 'no_warnings': True,
@@ -198,13 +198,14 @@ def download():
             description = info.get('description', 'No Description')
 
             subtitles = "No subtitles available."
-            subtitle_file = DOWNLOAD_DIR / f"{video_id}.en.vtt"
+            subtitle_file = DOWNLOAD_DIR / f"{video_id}.en.ttml"
 
             if subtitle_file.is_file():
                 subtitles = process_subtitle(subtitle_file)
 
             subtitle_file = save_text_file(
                 subtitles, f"{video_id}_subtitles.txt")
+            print(subtitles[:300])
 
             # Save metadata
             metadata_content = f"<title>{

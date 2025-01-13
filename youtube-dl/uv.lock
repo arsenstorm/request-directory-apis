@@ -188,6 +188,24 @@ wheels = [
 ]
 
 [[package]]
+name = "srt"
+version = "3.5.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/b7/4a1bc231e0681ebf339337b0cd05b91dc6a0d701fa852bb812e244b7a030/srt-3.5.3.tar.gz", hash = "sha256:4884315043a4f0740fd1f878ed6caa376ac06d70e135f306a6dc44632eed0cc0", size = 28296 }
+
+[[package]]
+name = "ttml-to-json"
+version = "0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ff/77/68a9396b0a06f87ab1bb57c2fcd2f9f80a6df3cd7e2460174b0629587903/ttml-to-json-0.2.tar.gz", hash = "sha256:acb771b12bed29367c3201dc7cfd9d297effe2671f286c3145c2965248701377", size = 6574 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/1f/25f73a1ec91e7c14d6eb375fc165d75c603c51f7418677094cffb1238aff/ttml_to_json-0.2-py3-none-any.whl", hash = "sha256:aad6e960f9e387009181f7cc93dcc860b94d7f98a110bc5183ae0b2fb2546117", size = 7227 },
+]
+
+[[package]]
 name = "urllib3"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -219,13 +237,15 @@ wheels = [
 
 [[package]]
 name = "youtube-dl"
-version = "0.1.0"
+version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "boto3" },
     { name = "flask" },
     { name = "flask-cors" },
     { name = "python-dotenv" },
+    { name = "srt" },
+    { name = "ttml-to-json" },
     { name = "webvtt-py" },
     { name = "yt-dlp" },
 ]
@@ -236,6 +256,8 @@ requires-dist = [
     { name = "flask", specifier = "==2.3.2" },
     { name = "flask-cors", specifier = ">=4.0.2" },
     { name = "python-dotenv", specifier = "==1.0.0" },
+    { name = "srt", specifier = ">=3.5.3" },
+    { name = "ttml-to-json", specifier = ">=0.2" },
     { name = "webvtt-py", specifier = ">=0.5.1" },
     { name = "yt-dlp", specifier = "==2024.12.23" },
 ]
