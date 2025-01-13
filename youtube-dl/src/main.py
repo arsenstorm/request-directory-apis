@@ -208,7 +208,8 @@ def download():
             print(subtitles[:300])
 
             # Save metadata
-            metadata_content = f"title:{title}\ndescription:{description}"
+            metadata_content = f"title:{html.unescape(title)}\ndescription:{
+                html.unescape(description)}"
             # Formatted as:
             # title:[TITLE]
             # description:[DESCRIPTION]
