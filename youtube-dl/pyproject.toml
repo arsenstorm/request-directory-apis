@@ -1,6 +1,6 @@
 [project]
 name = "youtube-dl"
-version = "0.1.0"
+version = "1.0.0"
 description = "YouTube video downloader API."
 readme = "README.md"
 requires-python = ">=3.13"
@@ -9,5 +9,6 @@ dependencies = [
     "Flask==2.3.2",
     "flask-cors>=4.0.2",
     "python-dotenv==1.0.0",
+    "webvtt-py>=0.5.1",
     "yt-dlp==2024.12.23",
 ]

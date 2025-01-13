@@ -52,6 +52,9 @@ We get the following response:
 ```json
 {
   "video_id": "dQw4w9WgXcQ",
+  "video_url": "https://request.directory/download/...", // The downloaded video expires after 24 hours
+  "metadata_url": "https://cdn.request.directory/youtube/dQw4w9WgXcQ_metadata.txt",
+  "subtitles_url": "https://cdn.request.directory/youtube/dQw4w9WgXcQ_subtitles.txt",
   "thumbnails": {
     "max": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg", // 1280x720
     "high": "https://i.ytimg.com/vi/dQw4w9WgXcQ/sddefault.jpg", // 640x360
@@ -59,7 +62,6 @@ We get the following response:
     "low": "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg", // 320x180
     "min": "https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg" // 120x90
   },
-  "download_url": "https://request.directory/download/...", // The downloaded video expires after 24 hours
   "expires_at": "2025-01-13T00:00:00Z", // The expiration date of the downloaded video
   "success": true
 }
@@ -68,8 +70,10 @@ We get the following response:
 In this response, we’ve received these details:
 
 - `video_id`: The ID of the video.
+- `video_url`: The URL of the downloaded video.
+- `metadata_url`: The URL of the metadata file.
+- `subtitles_url`: The URL of the subtitles file.
 - `thumbnails`: The thumbnails of the video.
-- `download_url`: The URL of the downloaded video.
 - `expires_at`: The expiration date of the downloaded video.
 - `success`: Whether the request was successful.
 
