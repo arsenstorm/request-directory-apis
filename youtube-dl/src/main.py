@@ -208,8 +208,10 @@ def download():
             print(subtitles[:300])
 
             # Save metadata
-            metadata_content = f"<title>{
-                title}</title>\n<description>{description}</description>"
+            metadata_content = f"title:{title}\ndescription:{description}"
+            # Formatted as:
+            # title:[TITLE]
+            # description:[DESCRIPTION]
             metadata_file = save_text_file(
                 metadata_content, f"{video_id}_metadata.txt")
 
