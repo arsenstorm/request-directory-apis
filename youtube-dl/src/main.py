@@ -156,6 +156,7 @@ def download():
             'subtitleslangs': ['en'],
             'subtitlesformat': 'ttml',
             'nocheckcertificate': True,
+            'force_ipv4': True,
             # 'quiet': True,
             # 'no_warnings': True,
             'cookiefile': str(COOKIE_FILE) if COOKIE_FILE_EXISTS else None,
