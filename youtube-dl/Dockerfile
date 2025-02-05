@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
 # Copy project files
 COPY pyproject.toml .
 COPY uv.lock .
+COPY yt-dlp.sh .
+COPY entrypoint.sh /entrypoint.sh
 
 # uv stuff
 RUN . "${HOME}/.local/bin/env" \
@@ -21,7 +23,11 @@ RUN . "${HOME}/.local/bin/env" \
     && . .venv/bin/activate \
     && uv pip install -e . \
     # Install yt-dlp
-    && uv pip install -U --pre yt-dlp
+    && uv pip install -U --pre yt-dlp \
+    # Create update script
+    && chmod +x /entrypoint.sh \
+    && chmod +x /app/yt-dlp.sh \
+    && echo '*/10 * * * * /app/yt-dlp.sh' | crontab -
 
 # Copy application code
 COPY . .
@@ -41,4 +47,4 @@ ENV YOUTUBEDL_DEBUG=false \
     PATH="/app/.venv/bin:${PATH}"
 
 # Run the app using the Python from the virtual environment
-CMD ["/app/.venv/bin/python", "src/main.py"]
+ENTRYPOINT ["/entrypoint.sh"]
