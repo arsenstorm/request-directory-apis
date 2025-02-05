@@ -4,6 +4,7 @@ WORKDIR /app
 
 # Install system dependencies and uv in the same layer
 RUN apt-get update && apt-get install -y \
+    cron \
     curl \
     ffmpeg \
     wget \
